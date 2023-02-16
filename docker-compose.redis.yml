@@ -1,0 +1,22 @@
+version: "3.8"
+services:
+    redis:
+        #? Set container name
+        container_name: redis_db
+
+        #? Environment file
+        env_file:
+            - .env
+
+        #? Official redis Image
+        image: redis:7-alpine
+
+        #? restart container
+        restart: always
+
+        #? Ports
+        ports:
+            - ${REDIS_PORT}:${REDIS_PORT}
+        
+        #? Entrypoint/Command
+        command: redis-server --loglevel warning

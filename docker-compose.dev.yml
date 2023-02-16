@@ -1,0 +1,66 @@
+version: "3.8"
+services:
+    api:
+        #? Interactive shell
+        stdin_open: true
+        tty: true
+
+        #? Set container name
+        container_name: github_api
+
+        #? Build the auth service
+        build:
+            context: .
+            dockerfile: dockerfiles/Dockerfile.dev
+        
+        #? Environment file
+        env_file:
+            - .env
+            - .env.dev
+        
+        #? Define entrypoint
+        entrypoint: 'npm run start:dev'
+
+        #? Restart if down
+        restart: always
+
+        #? Ports
+        ports:
+            - ${GITHUB_API_PORT}:${GITHUB_API_PORT}
+
+        #? Set network
+        networks:
+            - github_api_network
+
+        #? Container dependencies
+        depends_on:
+            - redis
+
+    redis:
+        #? Set container name
+        container_name: redis_db
+
+        #? Environment file
+        env_file:
+            - .env
+
+        #? Official redis Image
+        image: redis:7-alpine
+
+        #? restart container
+        restart: always
+
+        #? Set network
+        networks:
+            - github_api_network
+
+        #? Ports
+        ports:
+            - ${REDIS_PORT}:${REDIS_PORT}
+        
+        #? Entrypoint/Command
+        command: redis-server --loglevel warning
+
+networks:
+    github_api_network:
+        external: false
