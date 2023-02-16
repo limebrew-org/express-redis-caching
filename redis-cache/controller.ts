@@ -33,7 +33,7 @@ const githubController = async (request: Request, response: Response) => {
 			error: "Bad Request! Username must be provided"
 		})
     
-    //? Check if ussrname entry exists in cache
+    //? Check if username entry exists in cache
     const cacheHitResponse = await isCacheHit(username)
 
     if(cacheHitResponse['hit'] == true){
