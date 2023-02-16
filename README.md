@@ -39,10 +39,13 @@ This can be provided by passing `username` via Request Query parameters (`?usern
         GET http://localhost:8000/api/github?username=limebrew-org
 
 
+### Cache Miss
 In Case of Cache Miss, it will call the API directly and set the cache with values (username,value), which you can see in the response time for the request below:
 
 ![Cache-Miss](media/cache_miss.png)
 
+
+### Cache Hit
 In Case of Cache Hit, then value for the key (username) is fetched and sent as a response to the client which is visible in the response time for the request  below:
 
 ![Cache-Hit](media/cache_hit.png)
