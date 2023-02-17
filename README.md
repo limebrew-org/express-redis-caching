@@ -49,3 +49,7 @@ In Case of Cache Miss, it will call the API directly and set the cache with valu
 In Case of Cache Hit, then value for the key (username) is fetched and sent as a response to the client which is visible in the response time for the request  below:
 
 ![Cache-Hit](media/cache_hit.png)
+
+
+### Cache Expiration
+The cache is being expired automatically when the `CACHE_EXPIRATION_TIME` is reached which is passed from `.env` files set to `120` seconds. After that, the key will be removed and for next request, a brand new API call will be done.
