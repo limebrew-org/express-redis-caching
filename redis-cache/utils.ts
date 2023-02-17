@@ -1,5 +1,3 @@
-import { redisclient } from "./redis"
-import { CACHE_EXPIRATION_TIME } from "./constants"
 import axios from "axios"
 
 //TODO: Handle Environment Variables
