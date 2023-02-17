@@ -1,27 +1,8 @@
 import { Request, Response } from "express"
-import { redisclient } from "./redis";
-import axios from "axios"
+import { getGithubRepositories } from "./utils"
+import { CachePolicy } from "./policy"
 
-const isCacheHit = async (username) => {
-    const cacheFetchresponse = await redisclient.get(username)
-
-    if(cacheFetchresponse === null)
-        return { hit:false}
-    return { hit:true, value: JSON.parse(cacheFetchresponse) }
-}
-
-const getGithubRepositories = async (username) => {
-	const githubAPI = `https://api.github.com/users/${username}/repos`
-	return await axios
-		.get(githubAPI)
-		.then((res) => {
-			return { status: 200, data: res.data }
-		})
-		.catch((error) => {
-			return { status: 500, error: error }
-		})
-}
-
+//TODO: Github Repository API Controller
 const githubController = async (request: Request, response: Response) => {
 	//? Grab username from request
 	const username = request.query.username.toString()
@@ -34,8 +15,9 @@ const githubController = async (request: Request, response: Response) => {
 		})
     
     //? Check if username entry exists in cache
-    const cacheHitResponse = await isCacheHit(username)
+    const cacheHitResponse = await CachePolicy.isCacheHit(username)
 
+	//? If Cache hit
     if(cacheHitResponse['hit'] == true){
         const data = cacheHitResponse.value
         return response
@@ -52,16 +34,19 @@ const githubController = async (request: Request, response: Response) => {
 
     //? If reposne status is 200
 	if (githubRepositoryAPIResponse.status === 200){
+		//? Grab the response data from Github API
+		const repositories = githubRepositoryAPIResponse['data']
 
         //? Set the data in cache and then return back the data
-        await redisclient.set(username,JSON.stringify(githubRepositoryAPIResponse['data']))
+		await CachePolicy.setCache(username,JSON.stringify(repositories))
 
+		//? Send the response back to client
         return response
 			.status(200)
 			.json({
 				status: 200,
-				message: `${githubRepositoryAPIResponse["data"].length} repositories were found for username: ${username}`,
-				data: githubRepositoryAPIResponse["data"]
+				message: `${repositories.length} repositories were found for username: ${username}`,
+				data: repositories
 			})
     }
 		
