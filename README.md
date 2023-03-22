@@ -1,4 +1,4 @@
-# Cache-Policy-Testing
+# Express-Redis-Caching
 Testing Caching using Redis and Express by Caching Github Repository API
 
 ## Setup and Install
